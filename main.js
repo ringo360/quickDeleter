@@ -9,21 +9,26 @@ client.once('ready', async (client) => {
 })
 
 client.on('messageCreate', async (msg) => {
-    if (msg.content === '!boom') {
+    if (msg.content.startsWith('!boom')) {
         try {
+			const count = parseInt(msg.content.split(' ')[1])
+			if (isNaN(count) || count <= 0) {
+				await msg.reply('Invalid usage. Usage => !boom <amount>');
+				return;
+			}
             const channel = await msg.channel;
-            channel.messages.fetch({ limit: 100 }).then(messages => {
-                console.log(`Received ${messages.size} messages`);
-                //Iterate through the messages here with the variable "messages".
-                messages.forEach(message => {
-                    console.log(message.content)
-                    message.delete()
-                })
-            })
-        } catch (e) {
-            await msg.reply(e)
-        }
-    }
+		    const messages = await channel.messages.fetch({ limit: count + 1 });
+
+			console.log(`Received ${messages.size} messages`);
+
+			// メッセージをループ処理
+			messages.forEach(message => {
+				message.delete();
+			});
+		} catch (e) {
+			await msg.reply(e)
+		}
+	}
 })
 
 client.login(config.token)
