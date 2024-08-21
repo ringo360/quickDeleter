@@ -9,10 +9,10 @@ client.once('ready', async (client) => {
 })
 
 client.on('messageCreate', async (msg) => {
-    if (msg.content === '!purge10') {
+    if (msg.content === '!boom') {
         try {
             const channel = await msg.channel;
-            channel.messages.fetch({ limit: 5 }).then(messages => {
+            channel.messages.fetch({ limit: 100 }).then(messages => {
                 console.log(`Received ${messages.size} messages`);
                 //Iterate through the messages here with the variable "messages".
                 messages.forEach(message => {
