@@ -12,7 +12,7 @@ client.on('messageCreate', async (msg) => {
     if (msg.content === '!purge10') {
         try {
             const channel = await msg.channel;
-            channel.messages.fetch({ limit: 10 }).then(messages => {
+            channel.messages.fetch({ limit: 5 }).then(messages => {
                 console.log(`Received ${messages.size} messages`);
                 //Iterate through the messages here with the variable "messages".
                 messages.forEach(message => {
@@ -27,3 +27,7 @@ client.on('messageCreate', async (msg) => {
 })
 
 client.login(config.token)
+
+process.on('uncaughtException', (err) => {
+    console.error(err)
+})
