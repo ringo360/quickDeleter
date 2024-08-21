@@ -18,21 +18,22 @@ client.on('messageCreate', async (msg) => {
 			}
             const channel = await msg.channel;
 		    const messages = await channel.messages.fetch({ limit: 100 });
-			// 実行者のメッセージのみを配列に格納
-			const userMessages = messages.filter(message => message.author.id === msg.author.id);
+			console.log(`Received ${messages.size} messages`);
 
-			// 最新の10個を取得
-			/** @type {Collection<string, Message<boolean>} */
-			const latestMessages = userMessages.slice(-count);
-
-			console.log(`Deleting ${latestMessages.length} messages`);
-
-			// メッセージをループ処理
-			latestMessages.forEach(message => {
-				message.delete();
+			// メッセージをループ処理し、実行者のメッセージのみ削除
+			let deletedCount = 0;
+			messages.some(message => {
+				if (message.author.id === msg.author.id) {
+					console.log(message.content);
+					message.delete();
+					deletedCount++;
+					return deletedCount >= count; // 指定個数削除したらループを止める
+				}
 			});
+
 		} catch (e) {
-			await msg.reply(e)
+			console.log(e)
+			await msg.reply(`Err: ${e}`)
 		}
 	}
 })
