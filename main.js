@@ -1,5 +1,5 @@
 'use strict'
-const { Client } = require('discord.js-selfbot-v13')
+const { Client, Collection, Message } = require('discord.js-selfbot-v13')
 
 const client = new Client()
 const config = require('./config.json')
@@ -17,12 +17,18 @@ client.on('messageCreate', async (msg) => {
 				return;
 			}
             const channel = await msg.channel;
-		    const messages = await channel.messages.fetch({ limit: count + 1 });
+		    const messages = await channel.messages.fetch({ limit: 100 });
+			// 実行者のメッセージのみを配列に格納
+			const userMessages = messages.filter(message => message.author.id === msg.author.id);
 
-			console.log(`Received ${messages.size} messages`);
+			// 最新の10個を取得
+			/** @type {Collection<string, Message<boolean>} */
+			const latestMessages = userMessages.slice(-count);
+
+			console.log(`Deleting ${latestMessages.length} messages`);
 
 			// メッセージをループ処理
-			messages.forEach(message => {
+			latestMessages.forEach(message => {
 				message.delete();
 			});
 		} catch (e) {
