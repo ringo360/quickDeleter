@@ -9,6 +9,7 @@ client.once('ready', async (client) => {
 })
 
 client.on('messageCreate', async (msg) => {
+	if (msg.author.id !== client.user.id) return
     if (msg.content.startsWith('!boom')) {
         try {
 			const count = parseInt(msg.content.split(' ')[1])
@@ -25,8 +26,10 @@ client.on('messageCreate', async (msg) => {
 			messages.some(message => {
 				if (message.author.id === msg.author.id) {
 					console.log(message.content);
-					message.delete();
-					deletedCount++;
+					if (message.deletable()) {
+						message.delete();
+						deletedCount++;
+					}
 					return deletedCount >= count; // 指定個数削除したらループを止める
 				}
 			});
