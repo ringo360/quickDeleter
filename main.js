@@ -26,7 +26,7 @@ client.on('messageCreate', async (msg) => {
 			messages.some(message => {
 				if (message.author.id === msg.author.id) {
 					console.log(message.content);
-					if (message.deletable()) {
+					if (message.deletable) {
 						message.delete();
 						deletedCount++;
 					}
